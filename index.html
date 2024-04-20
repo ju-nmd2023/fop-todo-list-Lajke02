@@ -3,34 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TodoListApp</title>
     <link rel="stylesheet" href="main.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap"
       rel="stylesheet"
       rel="stylesheet"
     />
+    <title>TodolistApp</title>
   </head>
   <body>
-    <main>
-      <div class="mainTitle">
-        <img src="" alt="" />
+    <div class="header-content">
+      <header>
         <h1>Busy Bunny</h1>
+        <h3>What are you hopping to do today?</h3>
+      </header>
+    </div>
+    <div class="container">
+      <div class="inputContainer">
+        <input
+          type="text"
+          id="taskInput"
+          class="taskInput"
+          placeholder="What to do next..."
+        />
+        <button id="addTask" class="addTask">🐰</button>
       </div>
-      <div class="container">
-        <div id="newtask">
-          <input
-            id="input"
-            class="input"
-            type="text"
-            placeholder="What to do next..."
-          />
-          <button id="addTask" class="add-task">+</button>
-        </div>
-        <div id="tasks" class="tasks"></div>
+      <div class="list-container">
+        <ul id="taskList" class="taskList"></ul>
       </div>
-    </main>
-    <footer></footer>
+    </div>
     <script src="todo.js"></script>
   </body>
 </html>

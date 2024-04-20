@@ -1,169 +1,78 @@
-//Some constants needed before creating a task
-const addTaskButtonElement = document.getElementById("addTask");
-const taskContainerElement = document.getElementById("tasks");
-const inputElement = document.getElementById("input");
+// this application is mostly based on a youtube tutorial: https://youtu.be/p6F5TBxs88A?si=a9k1Pv_7m0W2EgeM
 
-let tasks = [];
-let task;
+const addButton = document.getElementById("addTask");
+const taskInput = document.getElementById("taskInput");
+const taskList = document.getElementById("taskList");
 
-// clicking the button creates a task (add task)
-addTaskButtonElement.addEventListener("click", () => {
-  if (inputElement.value.length > 0) {
-    createTask();
-  }
-});
+loadTasks();
 
-//Creating a task and what it intails
-function createTask() {
-  let done = false;
-
-  const taskElement = document.createElement("div");
-  taskElement.classList.add("taskDiv");
-  taskContainerElement.appendChild(taskElement);
-
-  const taskTextElement = document.createElement("p");
-  taskTextElement.classList.add("task-element");
-  taskTextElement.innerText = inputElement.value;
-  taskElement.appendChild(taskTextElement);
-  saveTasks(inputElement.value, done);
-
-  inputElement.value = "";
-
-  const checkedOffButtonElement = document.createElement("button");
-  checkedOffButtonElement.classList.add("checked-button");
-  checkedOffButtonElement.innerText = "✔️";
-  taskElement.appendChild(checkedOffButtonElement);
-
-  checkedOffButtonElement.addEventListener("click", () => {
-    if (taskElement.style.backgroundColor !== "lightgreen") {
-      taskElement.style.backgroundColor = "lightgreen";
-      done = true;
-    } else if (taskElement.style.backgroundColor === "lightgreen") {
-      taskElement.style.backgroundColor = "white";
-      done = false;
-    }
-  });
-
-  const deleteButtonElement = document.createElement("button");
-  deleteButtonElement.classList.add("delete-button");
-  deleteButtonElement.innerText = "✖️";
-  taskElement.appendChild(deleteButtonElement);
-
-  //makes task disappear into the void (delete task)
-  deleteButtonElement.addEventListener("click", () => {
-    taskContainerElement.removeChild(taskElement);
-    let taskArray = JSON.parse(localStorage.getItem("task"));
-
-    let index = taskArray.findIndex(
-      (task) => task.text === taskTextElement.innerText
-    );
-    if (index !== -1) {
-      taskArray.splice(index, 1);
-      localStorage.setItem("task", JSON.stringify(taskArray));
-      displayTasks();
-    }
-    displayTasks();
-  });
-}
-
-function saveTasks(text, done) {
+function addTask() {
   const task = {
-    text: text,
-    done: done,
+    text: taskInput.value,
+    done: false,
   };
 
-  if (localStorage.task === undefined) {
-    localStorage.task = JSON.stringify([]);
+  if (task && taskInput.value.length > 0) {
+    createTaskElement(task);
+    taskInput.value = "";
+    saveTasks();
+  } else {
+    alert("Please enter a task");
   }
-
-  tasks = JSON.parse(localStorage.getItem("task"));
-  tasks.push(task);
-
-  localStorage.setItem("task", JSON.stringify(tasks));
-  displayTasks();
 }
 
-function displayTasks() {
-  if (localStorage.task !== undefined) {
-    taskContainerElement.innerHTML = "";
+addButton.addEventListener("click", addTask);
 
-    let taskArray = JSON.parse(localStorage.getItem("task"));
+function createTaskElement(task) {
+  const listItem = document.createElement("li");
+  listItem.textContent = task.text;
+  listItem.classList.add("listItem");
 
-    for (task of taskArray) {
-      const taskElement = document.createElement("div");
-      taskElement.classList.add("taskDiv");
-      taskContainerElement.appendChild(taskElement);
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = "X";
+  deleteButton.classList.add("deleteTask");
 
-      const taskTextElement = document.createElement("p");
-      taskTextElement.classList.add("task-element");
-      taskTextElement.innerText = task.text;
-      taskElement.appendChild(taskTextElement);
+  const checkedButton = document.createElement("button");
+  checkedButton.innerText = "✔️";
+  checkedButton.classList.add("checkedTask");
 
-      if (task.done === true) {
-        taskElement.style.backgroundColor = "lightgreen";
-      } else if (task.done === false) {
-        taskElement.style.backgroundColor = "white";
-      }
+  listItem.appendChild(checkedButton);
+  listItem.appendChild(deleteButton);
+  taskList.appendChild(listItem);
 
-      const checkedOffButtonElement = document.createElement("button");
-      checkedOffButtonElement.classList.add("checked-button");
-      checkedOffButtonElement.innerText = "✔️";
-      taskElement.appendChild(checkedOffButtonElement);
+  deleteButton.addEventListener("click", function () {
+    taskList.removeChild(listItem);
+    saveTasks();
+  });
 
-      checkedOffButtonElement.addEventListener("click", () => {
-        let taskArray = JSON.parse(localStorage.getItem("task"));
-
-        let index = taskArray.findIndex(
-          (task) => task.text === taskTextElement.innerText
-        );
-
-        if (index !== -1) {
-          taskArray.splice(index, 1);
-          localStorage.setItem("task", JSON.stringify(taskArray));
-          displayTasks();
-        }
-        if (taskElement.style.backgroundColor !== "lightgreen") {
-          taskElement.style.backgroundColor = "lightgreen";
-          task.done = true;
-        } else {
-          taskElement.style.backgroundColor = "white";
-          task.done = false;
-        }
-
-        if (task.done === true) {
-          taskElement.style.backgroundColor = "lightgreen";
-        } else if (task.done === false) {
-          taskElement.style.backgroundColor = "white";
-        }
-
-        saveTasks(task.text, task.done);
-        displayTasks();
-      });
-
-      const deleteButtonElement = document.createElement("button");
-      deleteButtonElement.classList.add("delete-button");
-      deleteButtonElement.innerText = "✖️";
-      taskElement.appendChild(deleteButtonElement);
-
-      deleteButtonElement.addEventListener("click", () => {
-        taskContainerElement.removeChild(taskElement);
-        let taskArray = JSON.parse(localStorage.getItem("task"));
-        let index = taskArray.findIndex(
-          (task) => task.text === taskTextElement.innerText
-        );
-
-        if (index !== -1) {
-          taskArray.splice(index, 1);
-          localStorage.setItem("task", JSON.stringify(taskArray));
-          displayTasks();
-        }
-        displayTasks();
-      });
+  checkedButton.addEventListener("click", () => {
+    task.done = !task.done;
+    if (task.done) {
+      listItem.style.color = "lightgreen";
+    } else {
+      listItem.style.color = "black";
     }
+    saveTasks();
+  });
+  if (task.done) {
+    listItem.style.color = "lightgreen";
   }
 }
-window.addEventListener("load", loadHandler);
 
-function loadHandler() {
-  displayTasks();
+function saveTasks() {
+  let tasks = [];
+  taskList.querySelectorAll("li").forEach(function (item) {
+    let task = {
+      text: item.textContent.replace("X", "").replace("✔️", "").trim(),
+      done: item.style.color === "lightgreen",
+    };
+    tasks.push(task);
+  });
+
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function loadTasks() {
+  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  tasks.forEach(createTaskElement);
 }
