@@ -1,5 +1,6 @@
 body {
-  background-color: paleturquoise;
+  background-image: url(bunny.jpg);
+
   font-family: "Kdam Thmor Pro", sans-serif;
 }
 
@@ -24,13 +25,13 @@ main {
 
 h1 {
   text-align: center;
-  color: cornflowerblue;
+  color: lightcoral;
   font-size: 50pt;
 }
 
 h3 {
   text-align: center;
-  color: darkseagreen;
+  color: black;
   font-size: 20pt;
 }
 
