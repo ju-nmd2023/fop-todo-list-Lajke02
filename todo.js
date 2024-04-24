@@ -37,7 +37,7 @@ function createTaskElement(task) {
 
   //creates a delete-button
   const deleteButton = document.createElement("button");
-  deleteButton.textContent = "X";
+  deleteButton.innerText = "X";
   deleteButton.classList.add("deleteTask");
 
   const checkedButton = document.createElement("button");
